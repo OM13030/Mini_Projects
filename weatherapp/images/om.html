@@ -1,0 +1,1113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>EventFlow — Complete Project Brief</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --ink: #0f0e0c;
+  --ink-2: #2a2825;
+  --ink-3: #4a4844;
+  --ink-4: #7a7772;
+  --ink-5: #aaa89f;
+  --paper: #f5f2ec;
+  --paper-2: #ede9e0;
+  --paper-3: #e2ddd3;
+  --accent: #c4380a;
+  --accent-2: #e05a20;
+  --gold: #b8860b;
+  --gold-light: #f0d060;
+  --teal: #0a7c6e;
+  --blue: #1a4a8c;
+  --green: #2d6a2d;
+  --divider: #d8d4ca;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; font-size: 16px; }
+body {
+  font-family: 'DM Sans', sans-serif;
+  background: var(--paper);
+  color: var(--ink);
+  line-height: 1.7;
+  overflow-x: hidden;
+}
+
+/* NOISE TEXTURE OVERLAY */
+body::before {
+  content: '';
+  position: fixed; inset: 0; z-index: 0; pointer-events: none;
+  opacity: 0.03;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+}
+
+/* SCROLLBAR */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: var(--paper-2); }
+::-webkit-scrollbar-thumb { background: var(--ink-5); border-radius: 3px; }
+
+/* NAV */
+nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+  background: rgba(245,242,236,0.88);
+  backdrop-filter: blur(14px);
+  border-bottom: 1px solid var(--divider);
+  padding: 0 2rem;
+  height: 56px;
+  display: flex; align-items: center; justify-content: space-between;
+}
+.nav-logo {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.2rem; font-weight: 700;
+  color: var(--ink);
+  letter-spacing: -0.02em;
+}
+.nav-logo span { color: var(--accent); font-style: italic; }
+.nav-links { display: flex; gap: 0.25rem; }
+.nav-links a {
+  font-size: 0.78rem; font-weight: 500;
+  color: var(--ink-4);
+  text-decoration: none;
+  padding: 5px 11px;
+  border-radius: 99px;
+  transition: all 0.18s;
+  letter-spacing: 0.02em;
+}
+.nav-links a:hover { color: var(--ink); background: var(--paper-2); }
+
+/* HERO */
+.hero {
+  min-height: 100vh;
+  display: flex; flex-direction: column; justify-content: center;
+  padding: 100px 2rem 4rem;
+  position: relative;
+  overflow: hidden;
+}
+.hero-bg-text {
+  position: absolute;
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(120px, 20vw, 280px);
+  font-weight: 900;
+  color: transparent;
+  -webkit-text-stroke: 1px rgba(196,56,10,0.07);
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  white-space: nowrap;
+  pointer-events: none;
+  user-select: none;
+  letter-spacing: -0.04em;
+}
+.hero-inner {
+  max-width: 900px; margin: 0 auto;
+  position: relative; z-index: 1;
+}
+.hero-tag {
+  display: inline-flex; align-items: center; gap: 8px;
+  background: var(--accent); color: #fff;
+  font-size: 0.72rem; font-weight: 600;
+  letter-spacing: 0.1em; text-transform: uppercase;
+  padding: 5px 14px; border-radius: 99px;
+  margin-bottom: 1.75rem;
+}
+.hero-tag::before {
+  content: ''; width: 6px; height: 6px;
+  background: var(--gold-light); border-radius: 50%;
+  animation: pulse 2s ease-in-out infinite;
+}
+@keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:0.6;transform:scale(0.8)} }
+.hero h1 {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(2.8rem, 7vw, 5.5rem);
+  font-weight: 900;
+  line-height: 1.05;
+  letter-spacing: -0.03em;
+  margin-bottom: 1.5rem;
+  color: var(--ink);
+}
+.hero h1 em { color: var(--accent); font-style: italic; }
+.hero h1 .line2 { display: block; }
+.hero-desc {
+  font-size: clamp(1rem, 1.8vw, 1.2rem);
+  color: var(--ink-3);
+  max-width: 58ch;
+  margin-bottom: 2.5rem;
+  line-height: 1.75;
+}
+.hero-stats {
+  display: flex; gap: 2.5rem; flex-wrap: wrap;
+  padding-top: 2rem;
+  border-top: 1px solid var(--divider);
+}
+.stat-item { }
+.stat-num {
+  font-family: 'Playfair Display', serif;
+  font-size: 2.2rem; font-weight: 700;
+  color: var(--accent);
+  line-height: 1;
+}
+.stat-label {
+  font-size: 0.75rem; color: var(--ink-4);
+  text-transform: uppercase; letter-spacing: 0.08em;
+  margin-top: 4px;
+}
+.scroll-hint {
+  position: absolute; bottom: 2.5rem; left: 50%;
+  transform: translateX(-50%);
+  font-size: 0.72rem; color: var(--ink-5);
+  letter-spacing: 0.1em; text-transform: uppercase;
+  display: flex; flex-direction: column; align-items: center; gap: 8px;
+}
+.scroll-hint::after {
+  content: '';
+  width: 1px; height: 40px;
+  background: linear-gradient(to bottom, var(--ink-5), transparent);
+  animation: scrollLine 1.8s ease-in-out infinite;
+}
+@keyframes scrollLine { 0%{opacity:1;transform:scaleY(1)} 100%{opacity:0;transform:scaleY(0.2) translateY(20px)} }
+
+/* SECTIONS */
+section {
+  padding: 6rem 2rem;
+  border-bottom: 1px solid var(--divider);
+  position: relative;
+}
+.section-inner { max-width: 960px; margin: 0 auto; }
+.section-label {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.7rem; font-weight: 500;
+  color: var(--accent);
+  letter-spacing: 0.15em; text-transform: uppercase;
+  margin-bottom: 0.75rem;
+  display: flex; align-items: center; gap: 10px;
+}
+.section-label::before {
+  content: '';
+  width: 24px; height: 1px; background: var(--accent);
+}
+.section-title {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(1.8rem, 4vw, 3rem);
+  font-weight: 700;
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+  margin-bottom: 1rem;
+  color: var(--ink);
+}
+.section-title em { color: var(--accent); font-style: italic; }
+.section-desc {
+  font-size: 1rem; color: var(--ink-3);
+  max-width: 56ch; margin-bottom: 3rem;
+  line-height: 1.8;
+}
+
+/* PROBLEM */
+.problem-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+.prob-card {
+  background: var(--paper-2);
+  border: 1px solid var(--divider);
+  border-radius: 12px; padding: 1.75rem;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+.prob-card:hover { transform: translateY(-3px); box-shadow: 0 8px 24px rgba(15,14,12,0.08); }
+.prob-card.wide { grid-column: 1 / -1; background: #fff; border-color: rgba(196,56,10,0.2); }
+.prob-icon { font-size: 1.5rem; margin-bottom: 1rem; }
+.prob-card h3 { font-size: 1rem; font-weight: 600; margin-bottom: 0.5rem; }
+.prob-card p { font-size: 0.88rem; color: var(--ink-3); line-height: 1.65; }
+
+/* WORKFLOW */
+.workflow-tabs { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 2rem; }
+.wtab {
+  padding: 7px 18px; border-radius: 99px; font-size: 0.82rem; font-weight: 500;
+  cursor: pointer; border: 1px solid var(--divider);
+  background: transparent; color: var(--ink-4);
+  font-family: 'DM Sans', sans-serif;
+  transition: all 0.18s;
+}
+.wtab.active { background: var(--ink); color: var(--paper); border-color: var(--ink); }
+.wstage { display: none; }
+.wstage.active { display: block; }
+.wf-cols { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; }
+.wf-col-title {
+  font-size: 0.72rem; font-weight: 600;
+  text-transform: uppercase; letter-spacing: 0.1em;
+  padding-bottom: 10px; margin-bottom: 12px;
+  border-bottom: 2px solid currentColor;
+}
+.wf-col-title.mgr { color: var(--accent); }
+.wf-col-title.frl { color: var(--blue); }
+.wf-col-title.sys { color: var(--teal); }
+.wf-col-title.cli { color: var(--green); }
+.wf-step {
+  background: #fff;
+  border: 1px solid var(--divider);
+  border-radius: 10px; padding: 1rem 1.1rem;
+  margin-bottom: 10px;
+  font-size: 0.875rem;
+  transition: border-color 0.18s;
+}
+.wf-step:hover { border-color: var(--ink-3); }
+.wf-step h5 { font-weight: 600; margin-bottom: 4px; font-size: 0.875rem; }
+.wf-step p { color: var(--ink-3); font-size: 0.82rem; line-height: 1.55; }
+.new-tag {
+  display: inline-block; font-size: 0.65rem; font-weight: 600;
+  background: var(--gold); color: #fff;
+  padding: 2px 7px; border-radius: 99px;
+  margin-left: 6px; vertical-align: middle; letter-spacing: 0.05em;
+}
+.dep-visual {
+  background: var(--paper-2); border: 1px solid var(--divider);
+  border-radius: 10px; padding: 1.25rem 1.5rem; margin-bottom: 1.25rem;
+  font-size: 0.85rem; color: var(--ink-3);
+}
+.dep-chain { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin: 8px 0; }
+.dep-pill {
+  padding: 4px 12px; border-radius: 99px; font-size: 0.78rem; font-weight: 500;
+  border: 1px solid var(--divider); background: #fff; color: var(--ink-4);
+}
+.dep-pill.done { background: #d4f0d4; color: var(--green); border-color: transparent; }
+.dep-pill.active-p { background: #ddeeff; color: var(--blue); border-color: transparent; }
+.dep-arr { color: var(--ink-5); font-size: 1.1rem; }
+
+/* FEATURES */
+.features-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; }
+.feat-card {
+  background: #fff; border: 1px solid var(--divider);
+  border-radius: 12px; padding: 1.5rem;
+  position: relative; overflow: hidden;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+.feat-card:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(15,14,12,0.07); }
+.feat-card::before {
+  content: '';
+  position: absolute; top: 0; left: 0; right: 0;
+  height: 3px;
+}
+.feat-card.core::before { background: var(--accent); }
+.feat-card.plus::before { background: var(--gold); }
+.feat-card.future::before { background: var(--teal); }
+.feat-num {
+  font-family: 'Playfair Display', serif;
+  font-size: 2rem; font-weight: 700; opacity: 0.12;
+  margin-bottom: 0.5rem; line-height: 1;
+}
+.feat-card h3 { font-size: 0.95rem; font-weight: 600; margin-bottom: 0.4rem; }
+.feat-card p { font-size: 0.82rem; color: var(--ink-3); line-height: 1.6; }
+.feat-badge {
+  display: inline-block; font-size: 0.65rem; font-weight: 600;
+  padding: 2px 8px; border-radius: 99px; margin-top: 0.75rem;
+  letter-spacing: 0.05em; text-transform: uppercase;
+}
+.badge-core { background: rgba(196,56,10,0.1); color: var(--accent); }
+.badge-plus { background: rgba(184,134,11,0.1); color: var(--gold); }
+.badge-future { background: rgba(10,124,110,0.1); color: var(--teal); }
+
+/* PROS CONS */
+.proscons { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; }
+.pc-card {
+  border-radius: 14px; padding: 2rem;
+}
+.pc-card.pros { background: #f0faf0; border: 1px solid #c8e6c8; }
+.pc-card.cons { background: #fff8f0; border: 1px solid #f0d8b8; }
+.pc-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.3rem; font-weight: 700; margin-bottom: 1.25rem;
+  display: flex; align-items: center; gap: 10px;
+}
+.pc-title.pros { color: var(--green); }
+.pc-title.cons { color: #b85a00; }
+.pc-list { list-style: none; display: flex; flex-direction: column; gap: 10px; }
+.pc-list li {
+  font-size: 0.875rem; color: var(--ink-2);
+  padding-left: 1.4rem; position: relative;
+  line-height: 1.6;
+}
+.pc-list.pros li::before { content: '✦'; position: absolute; left: 0; color: var(--green); font-size: 0.7rem; top: 3px; }
+.pc-list.cons li::before { content: '△'; position: absolute; left: 0; color: #b85a00; font-size: 0.7rem; top: 3px; }
+
+/* REVENUE */
+.rev-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; margin-bottom: 2rem; }
+.rev-card {
+  background: var(--ink-2); color: var(--paper);
+  border-radius: 14px; padding: 1.75rem;
+  position: relative; overflow: hidden;
+  transition: transform 0.2s;
+}
+.rev-card:hover { transform: translateY(-2px); }
+.rev-card::after {
+  content: '';
+  position: absolute; bottom: -20px; right: -20px;
+  width: 80px; height: 80px; border-radius: 50%;
+  background: rgba(255,255,255,0.04);
+}
+.rev-card h3 { font-size: 0.95rem; font-weight: 600; margin-bottom: 0.5rem; opacity: 0.9; }
+.rev-price {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.6rem; font-weight: 700;
+  color: var(--gold-light); margin: 0.75rem 0 0.5rem;
+}
+.rev-card p { font-size: 0.8rem; opacity: 0.65; line-height: 1.55; }
+.rev-phase {
+  display: inline-block; margin-top: 1rem;
+  font-size: 0.68rem; font-weight: 600;
+  letter-spacing: 0.08em; text-transform: uppercase;
+  border: 1px solid rgba(255,255,255,0.2);
+  padding: 3px 10px; border-radius: 99px; opacity: 0.8;
+}
+.rev-projections {
+  background: var(--paper-2); border: 1px solid var(--divider);
+  border-radius: 12px; overflow: hidden;
+}
+.rev-proj-row {
+  display: grid; grid-template-columns: 2fr 1fr 1fr 1fr 1fr;
+  padding: 0.9rem 1.25rem;
+  border-bottom: 1px solid var(--divider);
+  font-size: 0.85rem;
+  align-items: center;
+}
+.rev-proj-row:last-child { border-bottom: none; }
+.rev-proj-row.header {
+  font-size: 0.72rem; font-weight: 600;
+  text-transform: uppercase; letter-spacing: 0.07em;
+  color: var(--ink-4); background: var(--paper-3);
+}
+.rev-proj-row span:not(:first-child) { text-align: right; }
+.good { color: var(--green); font-weight: 600; }
+.warn { color: #b85a00; font-weight: 600; }
+
+/* ROADMAP */
+.roadmap { position: relative; padding-left: 2rem; }
+.roadmap::before {
+  content: '';
+  position: absolute; left: 8px; top: 8px; bottom: 8px;
+  width: 2px;
+  background: linear-gradient(to bottom, var(--accent), var(--gold), var(--teal));
+  opacity: 0.3;
+}
+.rm-phase { margin-bottom: 2.5rem; }
+.rm-dot {
+  position: absolute; left: 0; top: 4px;
+  width: 18px; height: 18px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+}
+.rm-dot.p1 { background: rgba(196,56,10,0.15); border: 2px solid var(--accent); }
+.rm-dot.p2 { background: rgba(184,134,11,0.15); border: 2px solid var(--gold); }
+.rm-dot.p3 { background: rgba(10,124,110,0.15); border: 2px solid var(--teal); }
+.rm-dot.p4 { background: rgba(26,74,140,0.15); border: 2px solid var(--blue); }
+.rm-phase { position: relative; padding-left: 1.5rem; }
+.rm-tag {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.7rem; font-weight: 500;
+  letter-spacing: 0.1em; text-transform: uppercase;
+  margin-bottom: 4px;
+}
+.rm-tag.p1 { color: var(--accent); }
+.rm-tag.p2 { color: var(--gold); }
+.rm-tag.p3 { color: var(--teal); }
+.rm-tag.p4 { color: var(--blue); }
+.rm-phase h3 { font-size: 1.05rem; font-weight: 600; margin-bottom: 0.6rem; }
+.rm-items { display: flex; flex-wrap: wrap; gap: 6px; }
+.rm-item {
+  font-size: 0.78rem; background: var(--paper-2);
+  border: 1px solid var(--divider);
+  border-radius: 6px; padding: 4px 10px;
+  color: var(--ink-3);
+}
+
+/* RISKS */
+.risk-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+.risk-card {
+  background: #fff; border: 1px solid var(--divider);
+  border-radius: 12px; padding: 1.4rem;
+  display: flex; gap: 1rem; align-items: flex-start;
+}
+.risk-dot {
+  width: 10px; height: 10px; border-radius: 50%;
+  flex-shrink: 0; margin-top: 5px;
+}
+.risk-dot.high { background: #e84444; }
+.risk-dot.med { background: var(--gold); }
+.risk-dot.low { background: var(--teal); }
+.risk-card h4 { font-size: 0.9rem; font-weight: 600; margin-bottom: 4px; }
+.risk-card p { font-size: 0.82rem; color: var(--ink-3); line-height: 1.6; }
+
+/* COMPETE TABLE */
+.comp-table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
+.comp-table th {
+  background: var(--ink); color: var(--paper);
+  padding: 12px 16px; text-align: left;
+  font-size: 0.78rem; font-weight: 600;
+  letter-spacing: 0.04em;
+}
+.comp-table th:first-child { border-radius: 10px 0 0 0; }
+.comp-table th:last-child { border-radius: 0 10px 0 0; }
+.comp-table td {
+  padding: 11px 16px; border-bottom: 1px solid var(--divider);
+  color: var(--ink-3);
+}
+.comp-table tr:last-child td { border-bottom: none; }
+.comp-table tr:hover td { background: var(--paper-2); }
+.check { color: var(--green); font-weight: 600; font-size: 0.82rem; }
+.cross { color: #e84444; font-size: 0.82rem; }
+.partial { color: var(--gold); font-size: 0.82rem; }
+
+/* STACK */
+.stack-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; }
+.stack-card {
+  background: var(--paper-2); border: 1px solid var(--divider);
+  border-radius: 10px; padding: 1.25rem;
+  text-align: center;
+}
+.stack-icon { font-size: 1.5rem; margin-bottom: 0.5rem; }
+.stack-card h4 { font-size: 0.85rem; font-weight: 600; margin-bottom: 4px; }
+.stack-card p { font-size: 0.75rem; color: var(--ink-4); }
+
+/* NAMES */
+.names-grid { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 1rem; }
+.name-pill {
+  font-family: 'Playfair Display', serif;
+  font-size: 1rem; font-style: italic;
+  padding: 8px 20px; border-radius: 99px;
+  border: 1px solid var(--divider);
+  cursor: pointer; transition: all 0.18s;
+  background: transparent; color: var(--ink-3);
+  font-weight: 400;
+}
+.name-pill.active, .name-pill:hover { background: var(--ink); color: var(--paper); border-color: var(--ink); }
+.name-pill.best { border-color: var(--accent); }
+
+/* FOUNDER */
+.founder-box {
+  background: linear-gradient(135deg, var(--ink-2) 0%, var(--ink) 100%);
+  color: var(--paper); border-radius: 16px;
+  padding: 2.5rem; position: relative; overflow: hidden;
+}
+.founder-box::before {
+  content: '"';
+  font-family: 'Playfair Display', serif;
+  font-size: 12rem; line-height: 1;
+  color: rgba(255,255,255,0.04);
+  position: absolute; top: -1rem; left: 1.5rem;
+  font-weight: 900; pointer-events: none;
+}
+.founder-box p {
+  font-size: 1.05rem; line-height: 1.8;
+  max-width: 68ch; position: relative; z-index: 1;
+  opacity: 0.9;
+}
+.founder-box .founder-sig {
+  margin-top: 1.5rem; font-family: 'Playfair Display', serif;
+  font-style: italic; font-size: 1rem;
+  color: var(--gold-light); opacity: 0.8;
+}
+
+/* FOOTER */
+footer {
+  padding: 3rem 2rem;
+  background: var(--ink);
+  color: rgba(245,242,236,0.5);
+  font-size: 0.8rem;
+  display: flex; justify-content: space-between; align-items: center;
+  flex-wrap: wrap; gap: 1rem;
+}
+footer .logo-f {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.1rem; font-weight: 700;
+  color: var(--paper); letter-spacing: -0.02em;
+}
+footer .logo-f span { color: var(--gold-light); font-style: italic; }
+
+/* ANIMATIONS */
+.reveal {
+  opacity: 0; transform: translateY(24px);
+  transition: opacity 0.6s ease, transform 0.6s ease;
+}
+.reveal.visible { opacity: 1; transform: translateY(0); }
+
+/* RESPONSIVE */
+@media (max-width: 768px) {
+  .problem-grid, .proscons, .risk-grid, .features-grid,
+  .rev-grid, .wf-cols, .stack-grid { grid-template-columns: 1fr; }
+  .prob-card.wide { grid-column: 1; }
+  .rev-proj-row { grid-template-columns: 1fr 1fr; gap: 4px; }
+  .rev-proj-row span:nth-child(n+3) { display: none; }
+  .rev-proj-row.header span:nth-child(n+3) { display: none; }
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-logo">Event<span>Flow</span></div>
+  <div class="nav-links">
+    <a href="#problem">Problem</a>
+    <a href="#workflow">Workflow</a>
+    <a href="#features">Features</a>
+    <a href="#revenue">Revenue</a>
+    <a href="#roadmap">Roadmap</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero" id="top">
+  <div class="hero-bg-text">EventFlow</div>
+  <div class="hero-inner">
+    <div class="hero-tag">SaaS · Indian Event Industry · Built for Gujarat</div>
+    <h1>
+      End the <em>WhatsApp chaos.</em>
+      <span class="line2">Run flawless events.</span>
+    </h1>
+    <p class="hero-desc">
+      EventFlow is a live event coordination platform built specifically for Indian wedding and event management companies — replacing group chats with structured, real-time task coordination between managers and freelancers.
+    </p>
+    <div class="hero-stats">
+      <div class="stat-item">
+        <div class="stat-num">3,000+</div>
+        <div class="stat-label">Event cos. in Gujarat</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-num">₹8,000cr</div>
+        <div class="stat-label">Indian wedding industry</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-num">0</div>
+        <div class="stat-label">Vertical competitors</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-num">8/10</div>
+        <div class="stat-label">Business viability score</div>
+      </div>
+    </div>
+  </div>
+  <div class="scroll-hint">Scroll</div>
+</section>
+
+<!-- PROBLEM -->
+<section id="problem">
+  <div class="section-inner">
+    <div class="section-label reveal">The Problem</div>
+    <h2 class="section-title reveal">Every Indian event runs on <em>WhatsApp groups.</em> That's the problem.</h2>
+    <p class="section-desc reveal">Event managers coordinate 20–80 freelancers across decoration, catering, sound, lighting, and logistics — entirely through chat messages. When things go wrong, nobody knows until it's too late.</p>
+    <div class="problem-grid reveal">
+      <div class="prob-card">
+        <div class="prob-icon">📱</div>
+        <h3>WhatsApp chaos</h3>
+        <p>200+ messages per event day. Critical updates buried. No way to know who saw what. Managers call the same person 4 times to confirm a single task.</p>
+      </div>
+      <div class="prob-card">
+        <div class="prob-icon">⛓️</div>
+        <h3>No dependency awareness</h3>
+        <p>Catering team sets up while decoration is still running. Sound check starts before the stage is ready. Nobody sees the chain — until it collapses.</p>
+      </div>
+      <div class="prob-card">
+        <div class="prob-icon">👻</div>
+        <h3>Freelancer ghosting</h3>
+        <p>A freelancer goes silent on event day. Manager only finds out when the task is already 45 minutes overdue and guests are waiting.</p>
+      </div>
+      <div class="prob-card">
+        <div class="prob-icon">📊</div>
+        <h3>Zero post-event learning</h3>
+        <p>Every event ends. Nothing is documented. The same delays happen at the next event. No data, no improvement, no accountability.</p>
+      </div>
+      <div class="prob-card wide">
+        <div class="prob-icon">💔</div>
+        <h3>The real cost nobody talks about</h3>
+        <p>A single botched event costs an event company ₹50,000–5,00,000 in refunds, reputation damage, and lost referrals. That's 5–10 years of EventFlow subscription wiped out in one bad day. The pain is real, recurring, and entirely preventable.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- WORKFLOW -->
+<section id="workflow">
+  <div class="section-inner">
+    <div class="section-label reveal">Complete Workflow</div>
+    <h2 class="section-title reveal">From event creation to <em>post-event report</em> — every step covered</h2>
+    <p class="section-desc reveal">Four stages, three user roles, zero gaps. Click each stage to see the full coordination flow.</p>
+
+    <div class="workflow-tabs reveal">
+      <button class="wtab active" onclick="showStage('pre',this)">Pre-event setup</button>
+      <button class="wtab" onclick="showStage('live',this)">Live event day</button>
+      <button class="wtab" onclick="showStage('escalation',this)">Escalation system</button>
+      <button class="wtab" onclick="showStage('post',this)">Post-event close</button>
+    </div>
+
+    <!-- PRE -->
+    <div class="wstage active reveal" id="wf-pre">
+      <div class="dep-visual">
+        <strong style="font-size:0.82rem;color:var(--ink-2);">Dependency chain auto-management</strong>
+        <div class="dep-chain" style="margin-top:8px;">
+          <span class="dep-pill done">Brief uploaded ✓</span>
+          <span class="dep-arr">→</span>
+          <span class="dep-pill done">Freelancers assigned ✓</span>
+          <span class="dep-arr">→</span>
+          <span class="dep-pill active-p">Inventory check-in</span>
+          <span class="dep-arr">→</span>
+          <span class="dep-pill">Venue walk-through</span>
+          <span class="dep-arr">→</span>
+          <span class="dep-pill">Event begins</span>
+        </div>
+        <p style="font-size:0.78rem;margin-top:6px;color:var(--ink-4);">Each step unlocks only when the previous is confirmed. System enforces sequence automatically.</p>
+      </div>
+      <div class="wf-cols">
+        <div>
+          <div class="wf-col-title mgr">Manager</div>
+          <div class="wf-step"><h5>Create event from template</h5><p>Choose Haldi, Mehendi, Sangeet, Pheras, or Reception. Pre-built Indian wedding task lists auto-load. Customize per client in minutes.</p></div>
+          <div class="wf-step"><h5>Set task dependencies</h5><p>Decoration before seating. Catering before pheras. System enforces the chain — no manual reminder calls.</p></div>
+          <div class="wf-step"><h5>Assign by reliability score</h5><p>Critical-path tasks show freelancer scores before assignment. Only 4★+ get high-stakes roles automatically surfaced.</p></div>
+          <div class="wf-step"><h5>Upload brief & venue map</h5><p>One document, shared selectively. Each freelancer sees only their department's brief. No confusion, no overload.</p></div>
+        </div>
+        <div>
+          <div class="wf-col-title frl">Freelancer</div>
+          <div class="wf-step"><h5>Confirm via WhatsApp or app</h5><p>Notification arrives both ways. One tap to accept. If 24 hrs no reply — system auto-escalates to manager.</p></div>
+          <div class="wf-step"><h5>QR inventory check-in <span class="new-tag">New</span></h5><p>On arrival, scan QR on equipment kit. App shows checklist. Missing item? Flagged before guests arrive — not after.</p></div>
+          <div class="wf-step"><h5>Zone walk-through confirm <span class="new-tag">New</span></h5><p>"I've seen my zone" — one tap. Manager sees physical readiness per department. Catches confusion before it becomes crisis.</p></div>
+        </div>
+        <div>
+          <div class="wf-col-title sys">System auto-actions</div>
+          <div class="wf-step"><h5>24-hr reminder broadcast</h5><p>Auto WhatsApp to all unconfirmed freelancers. Manager alerted only if still unconfirmed at 12 hrs.</p></div>
+          <div class="wf-step"><h5>Shortage alert + supplier suggest <span class="new-tag">New</span></h5><p>Missing item at check-in? System alerts manager and auto-suggests nearest saved supplier. Problem + solution, together.</p></div>
+          <div class="wf-step"><h5>Client pre-event summary <span class="new-tag">New</span></h5><p>12 hrs before: bride/groom portal shows "Your team is confirmed and ready." Zero anxiety calls to the manager that morning.</p></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- LIVE -->
+    <div class="wstage" id="wf-live">
+      <div class="dep-visual">
+        <strong style="font-size:0.82rem;color:var(--ink-2);">Live dependency chain — real-time unlock</strong>
+        <div class="dep-chain" style="margin-top:8px;">
+          <span class="dep-pill done">Decoration setup ✓</span>
+          <span class="dep-arr">→</span>
+          <span class="dep-pill active-p">Stage lighting (active)</span>
+          <span class="dep-arr">→</span>
+          <span class="dep-pill">Sound check</span>
+          <span class="dep-arr">→</span>
+          <span class="dep-pill">Guest seating opens</span>
+        </div>
+        <p style="font-size:0.78rem;margin-top:6px;color:var(--ink-4);">When Stage Lighting taps Done — sound team is instantly notified: "Your task is unlocked. Start now."</p>
+      </div>
+      <div class="wf-cols">
+        <div>
+          <div class="wf-col-title mgr">Manager dashboard</div>
+          <div class="wf-step"><h5>Live status board</h5><p>All departments as colored tiles: green (on track), amber (delayed), red (blocked). Whole event visible at a glance. No calls needed.</p></div>
+          <div class="wf-step"><h5>Only handles exceptions</h5><p>No ping for normal progress. Manager only pulled in when a task is 15+ mins delayed or freelancer taps BLOCKED.</p></div>
+          <div class="wf-step"><h5>Ripple reschedule engine <span class="new-tag">New</span></h5><p>"Push all dependents 20 mins" — one tap recalculates the whole timeline and notifies every affected freelancer instantly.</p></div>
+        </div>
+        <div>
+          <div class="wf-col-title frl">Freelancer PWA</div>
+          <div class="wf-step"><h5>3-button interface only</h5><p>Done / Delayed / Blocked. Entire day UI. Nothing to learn. A 60-year-old decorator uses it without training.</p></div>
+          <div class="wf-step"><h5>Photo proof on Done <span class="new-tag">New</span></h5><p>Optional snap when marking complete. "Decoration done" becomes undeniable. Kills every post-event dispute about who did what.</p></div>
+          <div class="wf-step"><h5>Emergency red button <span class="new-tag">New</span></h5><p>ONE BIG RED BUTTON: CRITICAL ISSUE. Bypasses all. Calls manager directly. For the gas-not-working-20-mins-before-dinner moment.</p></div>
+        </div>
+        <div>
+          <div class="wf-col-title cli">Client portal (live)</div>
+          <div class="wf-step"><h5>Real-time event progress <span class="new-tag">New</span></h5><p>"Your event is 68% complete. Decoration done. Catering on track." Client feels informed. Zero calls to manager during the event.</p></div>
+          <div class="wf-step"><h5>Read-only — no interaction</h5><p>Client sees but cannot touch. Peace of mind without interference in the operational workflow.</p></div>
+          <div class="wf-step"><h5>Milestone celebrations <span class="new-tag">New</span></h5><p>"The mandap is ready!" Small updates that make clients feel the team is working specifically for them.</p></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ESCALATION -->
+    <div class="wstage" id="wf-escalation">
+      <div class="dep-visual">
+        <strong style="font-size:0.82rem;color:var(--ink-2);">3-level escalation — most delays auto-resolve without the manager</strong>
+        <div class="dep-chain" style="margin-top:8px;">
+          <span class="dep-pill active-p">L1: Auto WhatsApp nudge</span>
+          <span class="dep-arr">→</span>
+          <span class="dep-pill">L2: Manager push alert</span>
+          <span class="dep-arr">→</span>
+          <span class="dep-pill">L3: Emergency in-app call</span>
+          <span class="dep-arr">→</span>
+          <span class="dep-pill">Owner escalation</span>
+        </div>
+      </div>
+      <div class="wf-cols">
+        <div>
+          <div class="wf-col-title mgr">Alert triggers</div>
+          <div class="wf-step"><h5>Task overdue 15 mins</h5><p>Auto amber alert to manager. Freelancer gets gentle nudge first. No human decision until 30 mins overdue.</p></div>
+          <div class="wf-step"><h5>Freelancer goes silent <span class="new-tag">New</span></h5><p>No tap in 45 mins during active task? System flags "Freelancer unresponsive." Real problem, caught automatically.</p></div>
+          <div class="wf-step"><h5>Critical path blocked</h5><p>Block on critical path? Immediate red alert to both event manager AND company owner. No hiding big problems.</p></div>
+        </div>
+        <div>
+          <div class="wf-col-title frl">Escalation routing</div>
+          <div class="wf-step"><h5>Level 1 — auto nudge</h5><p>System sends WhatsApp reminder to freelancer. No manager involved. Handles 60% of delays on its own.</p></div>
+          <div class="wf-step"><h5>Level 2 — manager alert</h5><p>Delay past threshold or BLOCKED tap. Manager gets push with context: task name, freelancer, how long overdue.</p></div>
+          <div class="wf-step"><h5>Level 3 — emergency call <span class="new-tag">New</span></h5><p>Red button pressed. In-app call to manager. No answer in 60 secs → escalates to owner. Chain of command, automated.</p></div>
+        </div>
+        <div>
+          <div class="wf-col-title sys">Smart fallbacks</div>
+          <div class="wf-step"><h5>Offline mode buffer</h5><p>Poor venue internet? Taps queue locally. Sync on reconnect. No data lost. No panic about connectivity in basements.</p></div>
+          <div class="wf-step"><h5>Cross-team surplus check <span class="new-tag">New</span></h5><p>Missing inventory? System checks if another team has surplus before alerting manager. Solves itself where possible.</p></div>
+          <div class="wf-step"><h5>WhatsApp fallback always on</h5><p>Any freelancer unable to use the PWA can still send a WhatsApp message. Webhook reads it and updates their status.</p></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- POST -->
+    <div class="wstage" id="wf-post">
+      <div class="wf-cols">
+        <div>
+          <div class="wf-col-title mgr">Manager actions</div>
+          <div class="wf-step"><h5>Rate each freelancer</h5><p>1-tap rating per person, optional note. Feeds the reliability score for future assignments. Takes 2 minutes.</p></div>
+          <div class="wf-step"><h5>Flag template improvements <span class="new-tag">New</span></h5><p>"Catering setup always runs 20 mins late" — one tap adds buffer to that task in the template for every future event.</p></div>
+          <div class="wf-step"><h5>Share report with owner</h5><p>One tap sends the auto-generated report. Manager looks professional. Owner gets visibility without micromanaging.</p></div>
+        </div>
+        <div>
+          <div class="wf-col-title sys">Auto-generated report</div>
+          <div class="wf-step"><h5>On-time performance %</h5><p>% tasks completed within scheduled window. Breakdown by department. Company benchmark over time.</p></div>
+          <div class="wf-step"><h5>Delay heatmap <span class="new-tag">New</span></h5><p>Which tasks, departments, freelancers cause delays. Patterns emerge after 5+ events. Data-backed improvement.</p></div>
+          <div class="wf-step"><h5>Freelancer performance scores</h5><p>Each freelancer's score updated. Top performers get "Reliable" badge. Bottom performers flagged. Meritocracy, automated.</p></div>
+        </div>
+        <div>
+          <div class="wf-col-title cli">Client close</div>
+          <div class="wf-step"><h5>Auto thank-you + summary <span class="new-tag">New</span></h5><p>"Your event ran at 94% on-time." Simple, professional, memorable. No competitor sends this. Unforgettable touch.</p></div>
+          <div class="wf-step"><h5>NPS satisfaction rating</h5><p>One-tap from client. Feeds company's public marketplace profile. Good events build reputation automatically.</p></div>
+          <div class="wf-step"><h5>Photo timeline album <span class="new-tag">New</span></h5><p>All "Done" photos compiled into an event timeline. Free portfolio for the company. Auto-generated marketing collateral.</p></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FEATURES -->
+<section id="features">
+  <div class="section-inner">
+    <div class="section-label reveal">Feature Set</div>
+    <h2 class="section-title reveal">Everything built for <em>one industry,</em> not every industry</h2>
+    <p class="section-desc reveal">Core MVP features ship in Month 1–3. Plus features in Month 4–6. Future features from Month 7 onward.</p>
+    <div class="features-grid reveal">
+      <div class="feat-card core"><div class="feat-num">01</div><h3>Indian event templates</h3><p>Pre-built task lists for Haldi, Mehendi, Sangeet, Pheras, Reception. Zero setup for standard events.</p><span class="feat-badge badge-core">Core MVP</span></div>
+      <div class="feat-card core"><div class="feat-num">02</div><h3>Live status dashboard</h3><p>Manager sees all departments as color-coded tiles in real time. Green, amber, red — at a glance.</p><span class="feat-badge badge-core">Core MVP</span></div>
+      <div class="feat-card core"><div class="feat-num">03</div><h3>3-button freelancer PWA</h3><p>Done / Delayed / Blocked. Lightweight, offline-capable. Works on cheapest Android phones.</p><span class="feat-badge badge-core">Core MVP</span></div>
+      <div class="feat-card core"><div class="feat-num">04</div><h3>Task dependency engine</h3><p>Auto-unlocks downstream tasks. Auto-notifies teams when their work is ready to begin.</p><span class="feat-badge badge-core">Core MVP</span></div>
+      <div class="feat-card core"><div class="feat-num">05</div><h3>WhatsApp integration</h3><p>Freelancer sends status via WhatsApp. Webhook reads it and updates the dashboard. Zero adoption barrier.</p><span class="feat-badge badge-core">Core MVP</span></div>
+      <div class="feat-card core"><div class="feat-num">06</div><h3>3-level escalation system</h3><p>Auto-nudge → manager alert → emergency call. Most delays resolve themselves. Manager only handles real problems.</p><span class="feat-badge badge-core">Core MVP</span></div>
+      <div class="feat-card plus"><div class="feat-num">07</div><h3>Photo proof on completion</h3><p>Freelancer snaps a photo when marking Done. Timestamped evidence. Kills post-event disputes entirely.</p><span class="feat-badge badge-plus">Phase 2</span></div>
+      <div class="feat-card plus"><div class="feat-num">08</div><h3>QR inventory check-in</h3><p>Scan equipment QR on arrival. Missing items flagged before guests arrive. Never find out too late again.</p><span class="feat-badge badge-plus">Phase 2</span></div>
+      <div class="feat-card plus"><div class="feat-num">09</div><h3>Client live portal</h3><p>Bride/groom sees real-time event progress. "Your event is 73% complete." Read-only. Zero calls to manager.</p><span class="feat-badge badge-plus">Phase 2</span></div>
+      <div class="feat-card plus"><div class="feat-num">10</div><h3>Post-event report + photo album</h3><p>Auto-generated performance report and a timeline photo album. Free portfolio for the company. Every time.</p><span class="feat-badge badge-plus">Phase 2</span></div>
+      <div class="feat-card plus"><div class="feat-num">11</div><h3>Freelancer reliability score</h3><p>Auto-calculated from on-time %, completion rate, ratings. The reputation that lives on your platform.</p><span class="feat-badge badge-plus">Phase 2</span></div>
+      <div class="feat-card plus"><div class="feat-num">12</div><h3>Ripple reschedule engine</h3><p>One task delayed? Push all dependents with one tap. System recalculates and notifies everyone instantly.</p><span class="feat-badge badge-plus">Phase 2</span></div>
+      <div class="feat-card future"><div class="feat-num">13</div><h3>Freelancer marketplace</h3><p>Companies browse verified freelancers by score, category, city. Freelancers apply to events. Platform takes 5–10%.</p><span class="feat-badge badge-future">Phase 3</span></div>
+      <div class="feat-card future"><div class="feat-num">14</div><h3>Gujarati / Hindi UI</h3><p>Full regional language interface. The only event coordination tool your team can use in their own language.</p><span class="feat-badge badge-future">Phase 3</span></div>
+      <div class="feat-card future"><div class="feat-num">15</div><h3>AI timeline suggestions</h3><p>After 10+ events, AI suggests smarter schedules based on your historical delay patterns. Gets better every event.</p><span class="feat-badge badge-future">Phase 4</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- PROS CONS -->
+<section id="proscons">
+  <div class="section-inner">
+    <div class="section-label reveal">Honest Assessment</div>
+    <h2 class="section-title reveal">Strengths and <em>real challenges</em></h2>
+    <p class="section-desc reveal">Built by someone from the industry — which means no sugarcoating either side.</p>
+    <div class="proscons reveal">
+      <div class="pc-card pros">
+        <div class="pc-title pros">✦ Genuine Strengths</div>
+        <ul class="pc-list pros">
+          <li>Problem is real and deeply felt — every Indian event manager lives this pain daily</li>
+          <li>Moat is cultural knowledge, not code — extremely hard for outsiders to replicate</li>
+          <li>Founder has lived the problem firsthand as a freelancer and manager — unfair advantage</li>
+          <li>No direct vertical competitor in Gujarat — greenfield market right now</li>
+          <li>Pricing model charges companies not freelancers — removes biggest adoption blocker</li>
+          <li>PWA + WhatsApp integration removes tech barrier for older freelancers entirely</li>
+          <li>Seasonal demand (Nov–Feb) creates intense, concentrated word-of-mouth windows</li>
+          <li>Phase 3 marketplace creates network effects and switching costs simultaneously</li>
+          <li>Client portal is a differentiator nobody else offers — strong sales hook</li>
+          <li>Every event auto-generates a performance report and portfolio — compounding value</li>
+        </ul>
+      </div>
+      <div class="pc-card cons">
+        <div class="pc-title cons">△ Real Challenges</div>
+        <ul class="pc-list cons">
+          <li>Freelancer adoption is the #1 kill risk — if 60-year-old decorators won't tap, system has no data</li>
+          <li>Chicken-and-egg: need companies before freelancers, freelancers before marketplace</li>
+          <li>Gujarat SMBs may resist software subscriptions — needs careful price framing</li>
+          <li>Seasonal demand spikes (Nov–Feb) create infrastructure and support load challenges</li>
+          <li>Connectivity at venues can be poor — offline mode is essential, not optional</li>
+          <li>Building web dashboard + PWA + WhatsApp bot together is heavy for a small team</li>
+          <li>Sales is entirely relationship-driven — needs boots on ground, not digital ads</li>
+          <li>No brand recognition yet — first clients need founder credibility to convert</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- REVENUE -->
+<section id="revenue">
+  <div class="section-inner">
+    <div class="section-label reveal">Revenue Model</div>
+    <h2 class="section-title reveal">Three streams. Start with one, <em>unlock the rest.</em></h2>
+    <div class="rev-grid reveal">
+      <div class="rev-card">
+        <h3>SaaS Subscription</h3>
+        <div class="rev-price">₹2,000–8,000/mo</div>
+        <p>Per event company. Based on event volume or manager count. Annual plans at 2 months discount. Primary revenue from Day 1.</p>
+        <span class="rev-phase">Start Here — Phase 1</span>
+      </div>
+      <div class="rev-card">
+        <h3>Per-Event Credits</h3>
+        <div class="rev-price">₹300–600/event</div>
+        <p>Free plan: 3 events/month. Buy credits for more. Ideal for seasonal businesses. Converts to subscription once habituated.</p>
+        <span class="rev-phase">Phase 2</span>
+      </div>
+      <div class="rev-card">
+        <h3>Marketplace Commission</h3>
+        <div class="rev-price">5–10% per booking</div>
+        <p>Companies find freelancers. Freelancers get booked. Platform takes commission. Verified freelancer badge: ₹500/year.</p>
+        <span class="rev-phase">Phase 3</span>
+      </div>
+    </div>
+
+    <div class="rev-projections reveal">
+      <div class="rev-proj-row header">
+        <span>Scenario</span>
+        <span>Clients</span>
+        <span>Avg MRR</span>
+        <span>Monthly</span>
+        <span>Status</span>
+      </div>
+      <div class="rev-proj-row">
+        <span>Bear case (Month 6)</span>
+        <span>5</span>
+        <span>₹2,500</span>
+        <span>₹12,500</span>
+        <span class="warn">Tight</span>
+      </div>
+      <div class="rev-proj-row">
+        <span>Base case (Year 1)</span>
+        <span>20</span>
+        <span>₹4,000</span>
+        <span>₹80,000</span>
+        <span class="good">Viable</span>
+      </div>
+      <div class="rev-proj-row">
+        <span>Bull case (Year 1)</span>
+        <span>40</span>
+        <span>₹5,000</span>
+        <span>₹2,00,000</span>
+        <span class="good">Strong</span>
+      </div>
+      <div class="rev-proj-row">
+        <span>Marketplace live (Year 2)</span>
+        <span>80+</span>
+        <span>₹6,000 + commissions</span>
+        <span>₹6,00,000+</span>
+        <span class="good">Business</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- COMPETE -->
+<section id="compete">
+  <div class="section-inner">
+    <div class="section-label reveal">Competitive Moat</div>
+    <h2 class="section-title reveal">Why existing tools <em>don't solve this</em></h2>
+    <p class="section-desc reveal">Trello, Asana, WhatsApp, Monday.com — none are built for live, on-ground, Indian event workflows.</p>
+    <div class="reveal" style="overflow-x:auto; border-radius:12px; border:1px solid var(--divider);">
+      <table class="comp-table">
+        <thead>
+          <tr>
+            <th>Feature</th>
+            <th>WhatsApp</th>
+            <th>Trello / Asana</th>
+            <th>EventFlow ✦</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>Live event status dashboard</td><td><span class="cross">✗ None</span></td><td><span class="partial">~ Limited</span></td><td><span class="check">✓ Core feature</span></td></tr>
+          <tr><td>One-tap field status updates</td><td><span class="partial">~ Text only</span></td><td><span class="cross">✗ Too complex</span></td><td><span class="check">✓ Done/Delay/Block</span></td></tr>
+          <tr><td>Task dependency auto-notifications</td><td><span class="cross">✗</span></td><td><span class="partial">~ Manual only</span></td><td><span class="check">✓ Fully automated</span></td></tr>
+          <tr><td>Freelancer model (not employee)</td><td><span class="check">✓</span></td><td><span class="cross">✗ Seat-based pricing</span></td><td><span class="check">✓ Built for freelancers</span></td></tr>
+          <tr><td>Works on low-end Android</td><td><span class="check">✓</span></td><td><span class="cross">✗ Heavy web app</span></td><td><span class="check">✓ Lightweight PWA</span></td></tr>
+          <tr><td>Indian event templates</td><td><span class="cross">✗</span></td><td><span class="cross">✗</span></td><td><span class="check">✓ Haldi to Reception</span></td></tr>
+          <tr><td>Gujarati / Hindi language</td><td><span class="check">✓</span></td><td><span class="cross">✗</span></td><td><span class="check">✓ Regional-first</span></td></tr>
+          <tr><td>Client live portal</td><td><span class="cross">✗</span></td><td><span class="cross">✗</span></td><td><span class="check">✓ Industry first</span></td></tr>
+          <tr><td>Photo proof on task completion</td><td><span class="partial">~ Manual sharing</span></td><td><span class="cross">✗</span></td><td><span class="check">✓ Built-in workflow</span></td></tr>
+          <tr><td>Post-event performance analytics</td><td><span class="cross">✗</span></td><td><span class="partial">~ Basic reports</span></td><td><span class="check">✓ Auto-generated</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<!-- ROADMAP -->
+<section id="roadmap">
+  <div class="section-inner">
+    <div class="section-label reveal">Build Roadmap</div>
+    <h2 class="section-title reveal">Phase by phase. <em>November is the target.</em></h2>
+    <p class="section-desc reveal">The Nov–Feb wedding season is the real deadline. Everything points at having 10 live clients before October 15th.</p>
+    <div class="roadmap reveal">
+      <div class="rm-phase">
+        <div class="rm-dot p1"></div>
+        <div class="rm-tag p1">Phase 1 — Month 1–3 · MVP</div>
+        <h3>Build the smallest thing that runs a real event</h3>
+        <div class="rm-items">
+          <span class="rm-item">Manager web dashboard</span>
+          <span class="rm-item">Freelancer PWA (3 buttons)</span>
+          <span class="rm-item">WhatsApp bot integration</span>
+          <span class="rm-item">Basic push notifications</span>
+          <span class="rm-item">Task dependency engine</span>
+          <span class="rm-item">Event brief sharing</span>
+          <span class="rm-item">3 free pilot events</span>
+          <span class="rm-item">Rajkot launch</span>
+        </div>
+      </div>
+      <div class="rm-phase">
+        <div class="rm-dot p2"></div>
+        <div class="rm-tag p2">Phase 2 — Month 4–6 · Core Polish</div>
+        <h3>Win the November wedding season</h3>
+        <div class="rm-items">
+          <span class="rm-item">Photo proof on completion</span>
+          <span class="rm-item">QR inventory check-in</span>
+          <span class="rm-item">Client live portal</span>
+          <span class="rm-item">Ripple reschedule engine</span>
+          <span class="rm-item">Post-event analytics report</span>
+          <span class="rm-item">Emergency red button</span>
+          <span class="rm-item">Launch paid subscriptions</span>
+          <span class="rm-item">Target 10 paying clients</span>
+        </div>
+      </div>
+      <div class="rm-phase">
+        <div class="rm-dot p3"></div>
+        <div class="rm-tag p3">Phase 3 — Month 7–12 · Network Effects</div>
+        <h3>Build the moat through the marketplace</h3>
+        <div class="rm-items">
+          <span class="rm-item">Freelancer reliability score</span>
+          <span class="rm-item">Freelancer marketplace</span>
+          <span class="rm-item">Gujarati language UI</span>
+          <span class="rm-item">Company owner dashboard</span>
+          <span class="rm-item">Expand to Surat, Vadodara</span>
+          <span class="rm-item">Template marketplace</span>
+          <span class="rm-item">30+ paying clients</span>
+        </div>
+      </div>
+      <div class="rm-phase">
+        <div class="rm-dot p4"></div>
+        <div class="rm-tag p4">Phase 4 — Year 2+ · Scale</div>
+        <h3>Geographic expansion and AI layer</h3>
+        <div class="rm-items">
+          <span class="rm-item">Mumbai, Rajasthan, Punjab</span>
+          <span class="rm-item">AI timeline suggestions</span>
+          <span class="rm-item">Vendor payment tracker</span>
+          <span class="rm-item">Enterprise plan</span>
+          <span class="rm-item">100+ clients</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- RISKS -->
+<section id="risks">
+  <div class="section-inner">
+    <div class="section-label reveal">Risk Register</div>
+    <h2 class="section-title reveal">Known risks, <em>honest mitigations</em></h2>
+    <div class="risk-grid reveal">
+      <div class="risk-card"><div class="risk-dot high"></div><div><h4>Freelancer adoption resistance</h4><p>Your weakest link. Mitigation: WhatsApp bot as primary interface — zero new app required. PWA as upgrade path only.</p></div></div>
+      <div class="risk-card"><div class="risk-dot high"></div><div><h4>Chicken-and-egg marketplace</h4><p>Don't launch marketplace until 5+ companies actively use the coordination tool. Sequence is everything.</p></div></div>
+      <div class="risk-card"><div class="risk-dot med"></div><div><h4>Low willingness to pay</h4><p>Frame pitch as: "One saved event pays for 2 years of EventFlow." Start at ₹999/mo founding price. Raise after 10 clients.</p></div></div>
+      <div class="risk-card"><div class="risk-dot med"></div><div><h4>Seasonal demand spikes</h4><p>Nov–Feb is peak. Plan infrastructure for burst usage. Off-season pricing keeps clients warm through summer.</p></div></div>
+      <div class="risk-card"><div class="risk-dot med"></div><div><h4>Solo build scope is heavy</h4><p>Phase 1 = WhatsApp bot + web dashboard only. No PWA until Month 4. Cut scope aggressively. Ship fast, iterate faster.</p></div></div>
+      <div class="risk-card"><div class="risk-dot low"></div><div><h4>Venue connectivity issues</h4><p>Offline-first for freelancer PWA: status taps queue locally and sync on reconnect. Non-negotiable from Day 1.</p></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- TECH STACK -->
+<section id="stack">
+  <div class="section-inner">
+    <div class="section-label reveal">Recommended Stack</div>
+    <h2 class="section-title reveal">Build fast. <em>Stay lean.</em></h2>
+    <p class="section-desc reveal">Stack chosen for speed of development, not perfection. Change anything — these are starting points.</p>
+    <div class="stack-grid reveal">
+      <div class="stack-card"><div class="stack-icon">⚛️</div><h4>Next.js</h4><p>Manager web dashboard. Fast, SEO-friendly, easy to deploy on Vercel.</p></div>
+      <div class="stack-card"><div class="stack-icon">📱</div><h4>PWA / React</h4><p>Freelancer mobile app. Lightweight, offline-capable, no app store needed.</p></div>
+      <div class="stack-card"><div class="stack-icon">💬</div><h4>Twilio / WATI</h4><p>WhatsApp Business API for freelancer fallback and auto-notifications.</p></div>
+      <div class="stack-card"><div class="stack-icon">🗄️</div><h4>Supabase</h4><p>Postgres database + realtime subscriptions for live dashboard updates.</p></div>
+      <div class="stack-card"><div class="stack-icon">🔔</div><h4>Firebase FCM</h4><p>Push notifications to PWA. Free tier handles MVP volume easily.</p></div>
+      <div class="stack-card"><div class="stack-icon">☁️</div><h4>Vercel + Railway</h4><p>Frontend on Vercel, backend on Railway. Both have generous free tiers for MVP.</p></div>
+      <div class="stack-card"><div class="stack-icon">📦</div><h4>Cloudinary</h4><p>Photo storage for task completion proof images. Auto-compression for low-bandwidth venues.</p></div>
+      <div class="stack-card"><div class="stack-icon">💳</div><h4>Razorpay</h4><p>Indian payment gateway. Subscriptions, UPI, cards. No international complexity.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- NAME -->
+<section id="names">
+  <div class="section-inner">
+    <div class="section-label reveal">Product Identity</div>
+    <h2 class="section-title reveal">What do you <em>call it?</em></h2>
+    <p class="section-desc reveal">Pick a name that feels professional to event companies but memorable for freelancers. Click to explore.</p>
+    <div class="names-grid reveal">
+      <button class="name-pill best active">EventFlow</button>
+      <button class="name-pill">Saanjh</button>
+      <button class="name-pill">Utsav Ops</button>
+      <button class="name-pill">FieldDay</button>
+      <button class="name-pill">Mandap</button>
+      <button class="name-pill">Baraati</button>
+      <button class="name-pill">EventKart</button>
+      <button class="name-pill">Shakha</button>
+    </div>
+    <p style="font-size:0.85rem;color:var(--ink-4);max-width:60ch;line-height:1.7;">
+      <strong style="color:var(--ink-2);">Recommendation:</strong> <em>EventFlow</em> is neutral, professional, and works across all event types and geographies. <em>Saanjh</em> (meaning "evening/celebration" in Gujarati) gives powerful local identity. <em>FieldDay</em> works if you eventually expand beyond events into any on-ground field coordination.
+    </p>
+  </div>
+</section>
+
+<!-- FOUNDER NOTE -->
+<section id="founder" style="border-bottom:none;">
+  <div class="section-inner">
+    <div class="section-label reveal">Founder's Edge</div>
+    <h2 class="section-title reveal">Why this founder, <em>why now</em></h2>
+    <div class="founder-box reveal">
+      <p>
+        I've stood in banquet halls at 9pm watching a coordinator run between 5 departments, phone in each hand, WhatsApp scrolling faster than anyone can read. I've been the freelancer waiting for instructions that came 45 minutes late. I know which part of the day coordination breaks down, what a "delayed" task actually means in a domino chain, and which freelancers will ghost when it matters most.
+        <br><br>
+        That knowledge — built over years inside the industry — is not something a better-funded startup from Bangalore can buy with a research budget. It's the real moat. EventFlow isn't built for the event industry. It's built <em>from</em> inside it.
+      </p>
+      <div class="founder-sig">— Built for Gujarat's event professionals · Rajkot, 2026</div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="logo-f">Event<span>Flow</span></div>
+  <div>SaaS Ideation Blueprint · Built for the Indian Event Industry · April 2026</div>
+  <div style="color:rgba(245,242,236,0.3);">Confidential — For discussion purposes only</div>
+</footer>
+
+<script>
+function showStage(id, btn) {
+  document.querySelectorAll('.wstage').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.wtab').forEach(b => b.classList.remove('active'));
+  document.getElementById('wf-' + id).classList.add('active');
+  btn.classList.add('active');
+}
+
+document.querySelectorAll('.name-pill').forEach(p => {
+  p.addEventListener('click', () => {
+    document.querySelectorAll('.name-pill').forEach(x => x.classList.remove('active'));
+    p.classList.add('active');
+  });
+});
+
+const reveals = document.querySelectorAll('.reveal');
+const io = new IntersectionObserver((entries) => {
+  entries.forEach((e, i) => {
+    if (e.isIntersecting) {
+      setTimeout(() => e.target.classList.add('visible'), i * 60);
+    }
+  });
+}, { threshold: 0.08, rootMargin: '0px 0px -40px 0px' });
+reveals.forEach(r => io.observe(r));
+</script>
+</body>
+</html>
+
